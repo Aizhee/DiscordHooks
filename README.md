@@ -46,7 +46,8 @@ _This software is not affiliated to, nor has it been authorized, sponsored or ot
        implementation 'com.github.Aizhee:DiscordHooks:1.0'
     }
     ```
-
+## Wiki
+[Full Documentation](https://github.com/Aizhee/DiscordHooks/wiki/Documentation)
 ## Usage
 
 ### Sending a Simple Text Message
