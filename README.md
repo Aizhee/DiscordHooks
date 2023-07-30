@@ -1,6 +1,5 @@
 
 [![](https://jitpack.io/v/Aizhee/DiscordHooks.svg)](https://jitpack.io/#Aizhee/DiscordHooks) 
-
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
 
