@@ -51,15 +51,22 @@ _This software is not affiliated to, nor has it been authorized, sponsored or ot
 ## Usage
 
 ### Sending a Simple Text Message
-
+- For kotlin:
 ```kotlin
 val webhookUrl = "https://discord.com/api/webhooks/your_webhook_id/your_webhook_token"
 val message = DiscordWebhookSender.DiscordWebhookMessage(content = "Hello, this is a simple text message.")
 DiscordWebhookSender.sendWebhook(webhookUrl, message)
 ```
+- For Java:
+```java
+String webhookUrl = "https://discord.com/api/webhooks/your_webhook_id/your_webhook_token";
+DiscordWebhookSender.DiscordWebhookMessage message = new DiscordWebhookSender.DiscordWebhookMessage();
+message.setContent("Hello, this is a simple text message.");
+DiscordWebhookSender.sendWebhook(webhookUrl, message);
+```
 
 ### Sending a Rich Embed Message
-
+- For Kotlin:
 ```kotlin
 val webhookUrl = "https://discord.com/api/webhooks/your_webhook_id/your_webhook_token"
 val author = DiscordWebhookSender.EmbedAuthor("John Doe", "https://example.com", "https://example.com/avatar.png")
@@ -76,7 +83,29 @@ val embed = DiscordWebhookSender.DiscordEmbed(
 val message = DiscordWebhookSender.DiscordWebhookMessage(embeds = listOf(embed))
 DiscordWebhookSender.sendWebhook(webhookUrl, message)
 ```
+- For Java:
+```java
+String webhookUrl = "https://discord.com/api/webhooks/your_webhook_id/your_webhook_token";
+DiscordWebhookSender.EmbedAuthor author = new DiscordWebhookSender.EmbedAuthor("John Doe", "https://example.com", "https://example.com/avatar.png");
+DiscordWebhookSender.EmbedField field1 = new DiscordWebhookSender.EmbedField("Field 1", "Value 1", true);
+DiscordWebhookSender.EmbedField field2 = new DiscordWebhookSender.EmbedField("Field 2", "Value 2", true);
+List<DiscordWebhookSender.EmbedField> fields = new ArrayList<>();
+fields.add(field1);
+fields.add(field2);
+DiscordWebhookSender.DiscordEmbed embed = new DiscordWebhookSender.DiscordEmbed();
+embed.setAuthor(author);
+embed.setTitle("Rich Embed Title");
+embed.setDescription("This is a rich embed message with fields.");
+embed.setColor(16711680); // Decimal color code for red: 255 Red, 0 Green, 0 Blue
+embed.setFields(fields);
 
+DiscordWebhookSender.DiscordWebhookMessage message = new DiscordWebhookSender.DiscordWebhookMessage();
+List<DiscordWebhookSender.DiscordEmbed> embeds = new ArrayList<>();
+embeds.add(embed);
+message.setEmbeds(embeds);
+
+DiscordWebhookSender.sendWebhook(webhookUrl, message);
+```
 ## Data Classes
 
 ### `DiscordEmbed`
