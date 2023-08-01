@@ -55,7 +55,7 @@ _This software is not affiliated to, nor has it been authorized, sponsored or ot
 ```kotlin
 val webhookUrl = "https://discord.com/api/webhooks/your_webhook_id/your_webhook_token"
 val message = DiscordWebhookSender.DiscordWebhookMessage(content = "Hello, kotlin.")
-DiscordWebhookSender.sendWebhook(webhookUrl, message)
+sendWebhook(webhookUrl, message)
 ```
 Output:
 
@@ -65,7 +65,7 @@ Output:
 String webhookUrl = "https://discord.com/api/webhooks/your_webhook_id/your_webhook_token";
 DiscordWebhookSender.DiscordWebhookMessage message = new DiscordWebhookSender.DiscordWebhookMessage();
 message.setContent("Hello, java.");
-DiscordWebhookSender.sendWebhook(webhookUrl, message);
+sendWebhook(webhookUrl, message);
 ```
 ![image](https://media.discordapp.net/attachments/1006249405013307413/1135869159012565022/image.png?width=383&height=97)
 ### Sending a Rich Embed Message
@@ -129,8 +129,7 @@ List<DiscordWebhookSender.DiscordEmbed> embeds = new ArrayList<>();
 embeds.add(embed);
 message.setEmbeds(embeds);
 
-DiscordWebhookSender.sendWebhook(webhookUrl, message);
-
+sendWebhook(webhookUrl, message);
 ```
 Output:
 
