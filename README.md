@@ -102,14 +102,14 @@ Output:
 - For Java:
 ```java
 String webhookUrl = "https://discord.com/api/webhooks/your_webhook_id/your_webhook_token";
-DiscordWebhookSender.EmbedAuthor author = new DiscordWebhookSender.EmbedAuthor("John Doe", "https://example.com", "https://example.com/avatar.png");
+DiscordWebhookSender.EmbedAuthor author = new DiscordWebhookSender.EmbedAuthor("John Doe", "https://example.com", "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Minecraft_missing_texture_block.svg/48px-Minecraft_missing_texture_block.svg.png?20230311130803");
 DiscordWebhookSender.EmbedField field1 = new DiscordWebhookSender.EmbedField("Field 1", "Value 1", true);
 DiscordWebhookSender.EmbedField field2 = new DiscordWebhookSender.EmbedField("Field 2", "Value 2", true);
 List<DiscordWebhookSender.EmbedField> fields = new ArrayList<>();
 fields.add(field1);
 fields.add(field2);
 DiscordWebhookSender.EmbedThumbnail thumbnail = new DiscordWebhookSender.EmbedThumbnail("https://example.com/thumbnail.png");
-DiscordWebhookSender.EmbedImage image = new DiscordWebhookSender.EmbedImage("https://example.com/image.png");
+DiscordWebhookSender.EmbedImage image = new DiscordWebhookSender.EmbedImage("https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Minecraft_missing_texture_block.svg/48px-Minecraft_missing_texture_block.svg.png?20230311130803");
 DiscordWebhookSender.EmbedFooter footer = new DiscordWebhookSender.EmbedFooter("This is the footer text", "https://example.com/footer_icon.png");
 Object timestamp = "now"; // You can also use a Date object here to set a specific timestamp.
 DiscordWebhookSender.DiscordEmbed embed = new DiscordWebhookSender.DiscordEmbed();
