@@ -1,5 +1,5 @@
 
-[![](https://jitpack.io/v/Aizhee/DiscordHooks.svg)](https://jitpack.io/#Aizhee/DiscordHooks) 
+[![](https://jitpack.io/v/Aizhee/DiscordHooks.svg)](https://jitpack.io/#Aizhee/DiscordHooks)
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 
 
@@ -43,7 +43,7 @@ _This software is not affiliated to, nor has it been authorized, sponsored or ot
 2. Add the dependency to your module's `build.gradle` file:
     ```groovy
     dependencies {
-       implementation 'com.github.Aizhee:DiscordHooks:1.0'
+       implementation 'com.github.Aizhee:DiscordHooks:1.1'
     }
     ```
 ## Wiki
@@ -51,62 +51,109 @@ _This software is not affiliated to, nor has it been authorized, sponsored or ot
 ## Usage
 
 ### Sending a Simple Text Message
-- For kotlin:
+- For Kotlin:
 ```kotlin
 val webhookUrl = "https://discord.com/api/webhooks/your_webhook_id/your_webhook_token"
-val message = DiscordWebhookSender.DiscordWebhookMessage(content = "Hello, this is a simple text message.")
-DiscordWebhookSender.sendWebhook(webhookUrl, message)
+val message = DiscordWebhookSender.DiscordWebhookMessage(content = "Hello, kotlin.")
+sendWebhook(webhookUrl, message)
 ```
+Output:
+
+![image](https://media.discordapp.net/attachments/1006249405013307413/1135867495241228378/image.png?width=406&height=83)
 - For Java:
 ```java
 String webhookUrl = "https://discord.com/api/webhooks/your_webhook_id/your_webhook_token";
 DiscordWebhookSender.DiscordWebhookMessage message = new DiscordWebhookSender.DiscordWebhookMessage();
-message.setContent("Hello, this is a simple text message.");
-DiscordWebhookSender.sendWebhook(webhookUrl, message);
+message.setContent("Hello, java.");
+sendWebhook(webhookUrl, message);
 ```
-
+![image](https://media.discordapp.net/attachments/1006249405013307413/1135869159012565022/image.png?width=383&height=97)
 ### Sending a Rich Embed Message
 - For Kotlin:
 ```kotlin
 val webhookUrl = "https://discord.com/api/webhooks/your_webhook_id/your_webhook_token"
-val author = DiscordWebhookSender.EmbedAuthor("John Doe", "https://example.com", "https://example.com/avatar.png")
-val field1 = DiscordWebhookSender.EmbedField("Field 1", "Value 1", true)
-val field2 = DiscordWebhookSender.EmbedField("Field 2", "Value 2", true)
-val fields = listOf(field1, field2)
-val embed = DiscordWebhookSender.DiscordEmbed(
-    author = author,
-    title = "Rich Embed Title",
-    description = "This is a rich embed message with fields.",
-    color = 16711680, // Decimal color code for red: 255 Red, 0 Green, 0 Blue
-    fields = fields
-)
-val message = DiscordWebhookSender.DiscordWebhookMessage(embeds = listOf(embed))
-DiscordWebhookSender.sendWebhook(webhookUrl, message)
+val author = DiscordWebhookSender.EmbedAuthor("John Doe", "https://example.com", "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Minecraft_missing_texture_block.svg/48px-Minecraft_missing_texture_block.svg.png?20230311130803")
+        val field1 = DiscordWebhookSender.EmbedField("Field 1", "Value 1", true)
+        val field2 = DiscordWebhookSender.EmbedField("Field 2", "Value 2", true)
+        val fields = listOf(field1, field2)
+        val thumbnail = DiscordWebhookSender.EmbedThumbnail("https://example.com/thumbnail.png")
+        val image = DiscordWebhookSender.EmbedImage("https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Minecraft_missing_texture_block.svg/48px-Minecraft_missing_texture_block.svg.png?20230311130803")
+        val footer = DiscordWebhookSender.EmbedFooter("This is the footer text", "https://example.com/footer_icon.png")
+        val timestamp = "now" // You can also use a Date object here to set a specific timestamp.
+        val embed = DiscordWebhookSender.DiscordEmbed(
+            author = author,
+            title = "Hello, Kotlin!",
+            url = "https://example.com",
+            description = "This is a rich embed message with fields.",
+            color = 16711680, // Decimal color code for red: 255 Red, 0 Green, 0 Blue
+            fields = fields,
+            thumbnail = thumbnail,
+            image = image,
+            footer = footer,
+            timestamp = timestamp
+        )
+
+        val message = DiscordWebhookSender.DiscordWebhookMessage(embeds = listOf(embed))
+        sendWebhook(webhookUrl, message)
 ```
+Output:
+
+![image](https://media.discordapp.net/attachments/1006249405013307413/1135866691071516843/image.png?width=662&height=451)
 - For Java:
 ```java
 String webhookUrl = "https://discord.com/api/webhooks/your_webhook_id/your_webhook_token";
-DiscordWebhookSender.EmbedAuthor author = new DiscordWebhookSender.EmbedAuthor("John Doe", "https://example.com", "https://example.com/avatar.png");
+DiscordWebhookSender.EmbedAuthor author = new DiscordWebhookSender.EmbedAuthor("John Doe", "https://example.com", "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Minecraft_missing_texture_block.svg/48px-Minecraft_missing_texture_block.svg.png?20230311130803");
 DiscordWebhookSender.EmbedField field1 = new DiscordWebhookSender.EmbedField("Field 1", "Value 1", true);
 DiscordWebhookSender.EmbedField field2 = new DiscordWebhookSender.EmbedField("Field 2", "Value 2", true);
 List<DiscordWebhookSender.EmbedField> fields = new ArrayList<>();
 fields.add(field1);
 fields.add(field2);
+DiscordWebhookSender.EmbedThumbnail thumbnail = new DiscordWebhookSender.EmbedThumbnail("https://example.com/thumbnail.png");
+DiscordWebhookSender.EmbedImage image = new DiscordWebhookSender.EmbedImage("https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Minecraft_missing_texture_block.svg/48px-Minecraft_missing_texture_block.svg.png?20230311130803");
+DiscordWebhookSender.EmbedFooter footer = new DiscordWebhookSender.EmbedFooter("This is the footer text", "https://example.com/footer_icon.png");
+Object timestamp = "now"; // You can also use a Date object here to set a specific timestamp.
 DiscordWebhookSender.DiscordEmbed embed = new DiscordWebhookSender.DiscordEmbed();
 embed.setAuthor(author);
-embed.setTitle("Rich Embed Title");
+embed.setTitle("Hello, Java!");
+embed.setUrl("https://example.com");
 embed.setDescription("This is a rich embed message with fields.");
 embed.setColor(16711680); // Decimal color code for red: 255 Red, 0 Green, 0 Blue
 embed.setFields(fields);
+embed.setThumbnail(thumbnail);
+embed.setImage(image);
+embed.setFooter(footer);
+embed.setTimestamp(timestamp);
 
 DiscordWebhookSender.DiscordWebhookMessage message = new DiscordWebhookSender.DiscordWebhookMessage();
 List<DiscordWebhookSender.DiscordEmbed> embeds = new ArrayList<>();
 embeds.add(embed);
 message.setEmbeds(embeds);
 
-DiscordWebhookSender.sendWebhook(webhookUrl, message);
+sendWebhook(webhookUrl, message);
 ```
+Output:
+
+![image](https://media.discordapp.net/attachments/1006249405013307413/1135869569077092412/image.png?width=556&height=455)
 ## Data Classes
+### `sendWebhook` Function
+
+Sends a Discord webhook message with the provided [message] data.
+
+| Parameter     | Type                           | Description                                                                                       |
+|---------------|--------------------------------|---------------------------------------------------------------------------------------------------|
+| webhookUrl    | `String`                       | The URL of the Discord webhook to send the message to. Don't know how to get it? [read this](https://www.svix.com/resources/guides/how-to-make-webhook-discord/).                                           |
+| message       | `DiscordWebhookMessage`        | The [DiscordWebhookMessage](#discordwebhookmessage) object containing the message data.          |
+### `DiscordWebhookMessage`
+
+Represents a Discord Webhook Message.
+
+| Parameter     | Type              | Description                                                                                                                                                         |
+|---------------|-------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| username      | `String?`         | Overrides the default username of the webhook.                                                                                                                      |
+| avatarUrl     | `String?`         | Overrides the default avatar of the webhook.                                                                                                                        |
+| content       | `String?`         | The simple text message to be sent. Limited to 2000 characters.                                                                                                     |
+| embeds        | `List<DiscordEmbed>?` | An array of [DiscordEmbed](#discordembed) objects, representing rich embeds to be included in the message.                                                           |
+
 
 ### `DiscordEmbed`
 
@@ -123,6 +170,7 @@ Represents a Discord Embed containing rich content.
 | thumbnail     | `EmbedThumbnail?`        | The [EmbedThumbnail](#embedthumbnail) of the embed, typically a small image associated with the content.                                                                           |
 | image         | `EmbedImage?`            | The [EmbedImage](#embedimage) of the embed, typically a larger image associated with the content.                                                                                  |
 | footer        | `EmbedFooter?`           | The [EmbedFooter](#embedfooter) of the embed, typically used for credits or attributions.                                                                                          |
+| timestamp     | `Date?` or `String?`                | The timestamp to display in the embed.  If set to a string `"now"`, the current date will be used.                                                   |
 
 ### `EmbedAuthor`
 
@@ -181,8 +229,7 @@ Represents a Discord Webhook Message.
 | embeds        | `List<DiscordEmbed>?` | An array of [DiscordEmbed](#discordembed) objects, representing rich embeds to be included in the message.                                                           |
 
 ## Notes
-
-- The library uses the OkHttp library for making HTTP requests. Make sure to include the OkHttp library in your project.
+- The timestamp can be set to "now" to use the current date and time, or you can provide a Date object to set a specific timestamp. 
 
 
 ## License
