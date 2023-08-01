@@ -55,7 +55,6 @@ object DiscordWebhookSender {
      * @param url The URL of the image.
      */
     data class EmbedImage(val url: String)
-
     /**
      * Data class representing the Footer of an embed.
      * @param text The text of the footer. It does not support Markdown.
@@ -84,7 +83,7 @@ object DiscordWebhookSender {
         val title: String? = null,
         val url: String? = null,
         val description: String? = null,
-        val color: Int?,
+        val color: Int? = 16711680,
         val fields: List<EmbedField>? = null,
         val thumbnail: EmbedThumbnail? = null,
         val images: List<EmbedImage>? = null,
@@ -98,12 +97,16 @@ object DiscordWebhookSender {
      * @param username Overrides the default username of the webhook.
      * @param avatarUrl Overrides the default avatar of the webhook.
      * @param content The simple text message to be sent. Limited to 2000 characters.
+     * @param thread Name of thread to create (requires the webhook channel to be a forum channel).
+     * @param notify Trigger push and desktop notifications.
      * @param embeds An array of [DiscordEmbed] objects, representing rich embeds to be included in the message.
      */
     data class DiscordWebhookMessage(
         val username: String? = null,
         val avatarUrl: String? = null,
         val content: String? = null,
+        val thread: String? = null,
+        val notify: Boolean? = true,
         val embeds: List<DiscordEmbed>? = null
     )
 
@@ -137,14 +140,14 @@ object DiscordWebhookSender {
 
     private suspend fun createJsonBody(webhookUrl: String, message: DiscordWebhookMessage): String = withContext(Dispatchers.Default) {
         val jsonObject = JSONObject()
-        message.username?.let { jsonObject.put("username", it) }
-        message.avatarUrl?.let { jsonObject.put("avatar_url", it) }
         message.content?.let { jsonObject.put("content", it) }
-
-        message.embeds?.let {
+        message.thread?.let { jsonObject.put("thread_name", it) }
+        message.notify?.let {if(!it){jsonObject.put("flags", 4096)} }
+        message.embeds?.let { it ->
             val embedsArray = JSONArray()
             for (embed in it) {
                 val embedObject = JSONObject()
+
                 embed.author?.let { author ->
                     val authorObject = JSONObject()
                     authorObject.put("name", author.name)
@@ -153,11 +156,12 @@ object DiscordWebhookSender {
                     embedObject.put("author", authorObject)
                 }
                 embed.title?.let { embedObject.put("title", it) }
-                embed.url?.let { embedObject.put("url", it) }
                 embed.description?.let { embedObject.put("description", it) }
+                embed.url?.let { embedObject.put("url", it) }
                 embed.color?.let { embedObject.put("color", it) }
+
+                val fieldsArray = JSONArray()
                 embed.fields?.let {
-                    val fieldsArray = JSONArray()
                     for (field in it) {
                         val fieldObject = JSONObject()
                         fieldObject.put("name", field.name)
@@ -165,24 +169,13 @@ object DiscordWebhookSender {
                         fieldObject.put("inline", field.inline)
                         fieldsArray.put(fieldObject)
                     }
-                    embedObject.put("fields", fieldsArray)
                 }
+                embedObject.put("fields", fieldsArray)
+
                 embed.thumbnail?.let {
                     val thumbnailObject = JSONObject()
                     thumbnailObject.put("url", it.url)
                     embedObject.put("thumbnail", thumbnailObject)
-                }
-                embed.images?.let {
-                    if (it.size > 4) {
-                        throw IllegalArgumentException("You can only have up to 4 embed images.")
-                    }
-                    val imagesArray = JSONArray()
-                    for (image in it) {
-                        val imageObject = JSONObject()
-                        imageObject.put("url", image.url)
-                        imagesArray.put(imageObject)
-                    }
-                    jsonObject.put("images", imagesArray)
                 }
                 embed.footer?.let {
                     val footerObject = JSONObject()
@@ -190,19 +183,54 @@ object DiscordWebhookSender {
                     it.iconUrl?.let { iconUrl -> footerObject.put("icon_url", iconUrl) }
                     embedObject.put("footer", footerObject)
                 }
+
                 embed.timestamp?.let { timestamp ->
                     val timestampString = when (timestamp) {
-                        is String -> if (timestamp.equals(
-                                "now",
-                                ignoreCase = true
-                            )
-                        ) Date().toIso8601String() else timestamp
-
+                        is String -> if (timestamp.equals("now", ignoreCase = true)) Date().toIso8601String() else timestamp
                         is Date -> timestamp.toIso8601String()
                         else -> throw IllegalArgumentException("Invalid timestamp format.")
                     }
                     embedObject.put("timestamp", timestampString)
                 }
+                embed.images?.let {
+                    if (it.size > 4) {
+                        throw IllegalArgumentException("You can only have up to 4 embed images.")
+                    }
+
+                    if (embed.url.isNullOrEmpty() && it.size > 1) {
+                        throw IllegalArgumentException("Cannot add more than 1 image if the embed URL is empty.")
+                    }
+
+                    if (embed.url.isNullOrEmpty() && it.size == 1) {
+                        val imageObject = JSONObject()
+                        for (image in it) {
+                            imageObject.put("url", image.url)
+                        }
+                        embedObject.put("url", imageObject)
+                    } else {
+                        val firstImage = it.getOrNull(0)
+
+                        if (firstImage != null) {
+                            val imageObject = JSONObject()
+                            imageObject.put("url", firstImage.url)
+                            val newEmbedObject = JSONObject(embedObject.toString())
+                            newEmbedObject.put("image", imageObject)
+                            newEmbedObject.put("url", embed.url)
+                            embedsArray.put(newEmbedObject)
+                        }
+
+                        for (i in 1 until it.size) {
+                            val image = it[i]
+                            val imagesObject = JSONObject()
+                            imagesObject.put("url", image.url)
+                            val imagesGroupObject = JSONObject()
+                            imagesGroupObject.put("image", imagesObject)
+                            imagesGroupObject.put("url", embed.url)
+                            embedsArray.put(imagesGroupObject)
+                        }
+                    }
+                }
+
                 embedsArray.put(embedObject)
             }
             jsonObject.put("embeds", embedsArray)
