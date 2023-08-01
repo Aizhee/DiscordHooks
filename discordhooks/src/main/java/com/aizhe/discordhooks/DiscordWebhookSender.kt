@@ -3,6 +3,10 @@
  **************************************************************************************************/
 package com.aizhe.discordhooks
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -10,6 +14,10 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 /**
  * A simple library for sending Discord webhook messages with embeds from an Android app.
@@ -26,7 +34,7 @@ object DiscordWebhookSender {
      * @param url The URL of the author. If specified, the name becomes a hyperlink.
      * @param iconUrl The URL of the author's icon.
      */
-    data class EmbedAuthor(val name: String, val url: String?, val iconUrl: String?)
+    data class EmbedAuthor(val name: String, val url: String? = null, val iconUrl: String? = null)
 
     /**
      * Data class representing a Field in an embed.
@@ -53,7 +61,7 @@ object DiscordWebhookSender {
      * @param text The text of the footer. It does not support Markdown.
      * @param iconUrl The URL of the footer's icon.
      */
-    data class EmbedFooter(val text: String, val iconUrl: String?)
+    data class EmbedFooter(val text: String, val iconUrl: String? = null)
 
     /**
      * Data class representing a Discord Embed.
@@ -68,17 +76,20 @@ object DiscordWebhookSender {
      * @param thumbnail The [EmbedThumbnail] of the embed, typically a small image associated with the content.
      * @param image The [EmbedImage] of the embed, typically a larger image associated with the content.
      * @param footer The [EmbedFooter] of the embed, typically used for credits or attributions.
+     * @param timestamp The timestamp to display in the embed.If null, the timestamp will be omitted.
+     *                  If set to "now", the current date will be used.
      */
     data class DiscordEmbed(
-        val author: EmbedAuthor?,
-        val title: String?,
-        val url: String?,
-        val description: String?,
+        val author: EmbedAuthor? = null,
+        val title: String? = null,
+        val url: String? = null,
+        val description: String? = null,
         val color: Int?,
-        val fields: List<EmbedField>?,
-        val thumbnail: EmbedThumbnail?,
-        val image: EmbedImage?,
-        val footer: EmbedFooter?
+        val fields: List<EmbedField>? = null,
+        val thumbnail: EmbedThumbnail? = null,
+        val image: EmbedImage? = null,
+        val footer: EmbedFooter?  = null,
+        val timestamp: Any? = null
     )
 
     /**
@@ -90,10 +101,10 @@ object DiscordWebhookSender {
      * @param embeds An array of [DiscordEmbed] objects, representing rich embeds to be included in the message.
      */
     data class DiscordWebhookMessage(
-        val username: String?,
-        val avatarUrl: String?,
-        val content: String?,
-        val embeds: List<DiscordEmbed>?
+        val username: String? = null,
+        val avatarUrl: String? = null,
+        val content: String? = null,
+        val embeds: List<DiscordEmbed>? = null
     )
 
     /**
@@ -102,6 +113,29 @@ object DiscordWebhookSender {
      * @param message The [DiscordWebhookMessage] object containing the message data.
      */
     fun sendWebhook(webhookUrl: String, message: DiscordWebhookMessage) {
+        val coroutineScope = CoroutineScope(Dispatchers.IO)
+        coroutineScope.launch {
+            try {
+                val json = createJsonBody(webhookUrl, message)
+                val requestBody = json.toRequestBody("application/json".toMediaType())
+                val request = Request.Builder()
+                    .url(webhookUrl)
+                    .post(requestBody)
+                    .build()
+
+                val response = client.newCall(request).execute()
+                if (!response.isSuccessful) {
+                    throw IOException("Unexpected HTTP response: ${response.code}")
+                }
+
+                response.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private suspend fun createJsonBody(webhookUrl: String, message: DiscordWebhookMessage): String = withContext(Dispatchers.Default) {
         val jsonObject = JSONObject()
         message.username?.let { jsonObject.put("username", it) }
         message.avatarUrl?.let { jsonObject.put("avatar_url", it) }
@@ -149,26 +183,36 @@ object DiscordWebhookSender {
                     it.iconUrl?.let { iconUrl -> footerObject.put("icon_url", iconUrl) }
                     embedObject.put("footer", footerObject)
                 }
+                embed.timestamp?.let { timestamp ->
+                    val timestampString = when (timestamp) {
+                        is String -> if (timestamp.equals(
+                                "now",
+                                ignoreCase = true
+                            )
+                        ) Date().toIso8601String() else timestamp
+
+                        is Date -> timestamp.toIso8601String()
+                        else -> throw IllegalArgumentException("Invalid timestamp format.")
+                    }
+                    embedObject.put("timestamp", timestampString)
+                }
                 embedsArray.put(embedObject)
             }
             jsonObject.put("embeds", embedsArray)
         }
+        jsonObject.toString()
+    }
 
-        val json = jsonObject.toString()
-        val requestBody = json.toRequestBody("application/json".toMediaType())
-        val request = Request.Builder()
-            .url(webhookUrl)
-            .post(requestBody)
-            .build()
+    //get time
+    private val iso8601Format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US).apply {
+        timeZone = TimeZone.getTimeZone("UTC")
+    }
 
-        try {
-            client.newCall(request).execute().use { response ->
-                if (!response.isSuccessful) {
-                    throw IOException("Unexpected HTTP response: ${response.code}")
-                }
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
+    /**
+     * Extension function to convert a Date object to its ISO 8601 formatted string representation.
+     * @return The ISO 8601 formatted string representation of the Date.
+     */
+    private fun Date.toIso8601String(): String {
+        return iso8601Format.format(this)
     }
 }

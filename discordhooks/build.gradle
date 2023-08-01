@@ -37,6 +37,8 @@ android {
 }
 
 dependencies {
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1"
     implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.11' // Use a stable version
     implementation 'org.json:json:20220320' // Use a stable version
 }
@@ -49,7 +51,7 @@ afterEvaluate {
 
                 groupId = 'com.github.Aizhe'
                 artifactId = 'discordhooks'
-                version = '1.0'
+                version = '1.1'
             }
         }
     }
