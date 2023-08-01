@@ -74,7 +74,7 @@ object DiscordWebhookSender {
      *              You can use an online color picker to get the color code.
      * @param fields An array of [EmbedField] objects containing additional information in the form of fields.
      * @param thumbnail The [EmbedThumbnail] of the embed, typically a small image associated with the content.
-     * @param image The [EmbedImage] of the embed, typically a larger image associated with the content.
+     * @param images An array of [EmbedImage] objects of the embed, typically a larger image associated with the content. Up to 4 images
      * @param footer The [EmbedFooter] of the embed, typically used for credits or attributions.
      * @param timestamp The timestamp to display in the embed.If null, the timestamp will be omitted.
      *                  If set to "now", the current date will be used.
@@ -87,7 +87,7 @@ object DiscordWebhookSender {
         val color: Int?,
         val fields: List<EmbedField>? = null,
         val thumbnail: EmbedThumbnail? = null,
-        val image: EmbedImage? = null,
+        val images: List<EmbedImage>? = null,
         val footer: EmbedFooter?  = null,
         val timestamp: Any? = null
     )
@@ -172,10 +172,17 @@ object DiscordWebhookSender {
                     thumbnailObject.put("url", it.url)
                     embedObject.put("thumbnail", thumbnailObject)
                 }
-                embed.image?.let {
-                    val imageObject = JSONObject()
-                    imageObject.put("url", it.url)
-                    embedObject.put("image", imageObject)
+                embed.images?.let {
+                    if (it.size > 4) {
+                        throw IllegalArgumentException("You can only have up to 4 embed images.")
+                    }
+                    val imagesArray = JSONArray()
+                    for (image in it) {
+                        val imageObject = JSONObject()
+                        imageObject.put("url", image.url)
+                        imagesArray.put(imageObject)
+                    }
+                    jsonObject.put("images", imagesArray)
                 }
                 embed.footer?.let {
                     val footerObject = JSONObject()
