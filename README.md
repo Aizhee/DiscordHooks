@@ -136,6 +136,25 @@ Output:
 
 ![image](https://media.discordapp.net/attachments/1006249405013307413/1135869569077092412/image.png?width=556&height=455)
 ## Data Classes
+### `sendWebhook` Function
+
+Sends a Discord webhook message with the provided [message] data.
+
+| Parameter     | Type                           | Description                                                                                       |
+|---------------|--------------------------------|---------------------------------------------------------------------------------------------------|
+| webhookUrl    | `String`                       | The URL of the Discord webhook to send the message to. Don't know how to get it? [read this](https://www.svix.com/resources/guides/how-to-make-webhook-discord/).                                           |
+| message       | `DiscordWebhookMessage`        | The [DiscordWebhookMessage](#discordwebhookmessage) object containing the message data.          |
+### `DiscordWebhookMessage`
+
+Represents a Discord Webhook Message.
+
+| Parameter     | Type              | Description                                                                                                                                                         |
+|---------------|-------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| username      | `String?`         | Overrides the default username of the webhook.                                                                                                                      |
+| avatarUrl     | `String?`         | Overrides the default avatar of the webhook.                                                                                                                        |
+| content       | `String?`         | The simple text message to be sent. Limited to 2000 characters.                                                                                                     |
+| embeds        | `List<DiscordEmbed>?` | An array of [DiscordEmbed](#discordembed) objects, representing rich embeds to be included in the message.                                                           |
+
 
 ### `DiscordEmbed`
 
