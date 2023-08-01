@@ -43,7 +43,7 @@ _This software is not affiliated to, nor has it been authorized, sponsored or ot
 2. Add the dependency to your module's `build.gradle` file:
     ```groovy
     dependencies {
-       implementation 'com.github.Aizhee:DiscordHooks:1.1'
+       implementation 'com.github.Aizhee:DiscordHooks:1.2'
     }
     ```
 ## Wiki
