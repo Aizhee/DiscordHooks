@@ -43,7 +43,7 @@ _This software is not affiliated to, nor has it been authorized, sponsored or ot
 2. Add the dependency to your module's `build.gradle` file:
     ```groovy
     dependencies {
-       implementation 'com.github.Aizhee:DiscordHooks:1.2'
+       implementation 'com.github.Aizhee:DiscordHooks:1.3'
     }
     ```
 ## Wiki
@@ -72,13 +72,17 @@ sendWebhook(webhookUrl, message);
 - For Kotlin:
 ```kotlin
 val webhookUrl = "https://discord.com/api/webhooks/your_webhook_id/your_webhook_token"
-val author = DiscordWebhookSender.EmbedAuthor("John Doe", "https://example.com", "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Minecraft_missing_texture_block.svg/48px-Minecraft_missing_texture_block.svg.png?20230311130803")
+        val author = DiscordWebhookSender.EmbedAuthor("John Doe", "https://example.com", "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Minecraft_missing_texture_block.svg/48px-Minecraft_missing_texture_block.svg.png?20230311130803")
         val field1 = DiscordWebhookSender.EmbedField("Field 1", "Value 1", true)
         val field2 = DiscordWebhookSender.EmbedField("Field 2", "Value 2", true)
         val fields = listOf(field1, field2)
-        val thumbnail = DiscordWebhookSender.EmbedThumbnail("https://example.com/thumbnail.png")
-        val image = DiscordWebhookSender.EmbedImage("https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Minecraft_missing_texture_block.svg/48px-Minecraft_missing_texture_block.svg.png?20230311130803")
-        val footer = DiscordWebhookSender.EmbedFooter("This is the footer text", "https://example.com/footer_icon.png")
+        val thumbnail = DiscordWebhookSender.EmbedThumbnail("https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Minecraft_missing_texture_block.svg/48px-Minecraft_missing_texture_block.svg.png?20230311130803")
+        val image1= DiscordWebhookSender.EmbedImage("https://images.pexels.com/photos/9322322/pexels-photo-9322322.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1")
+        val image2 = DiscordWebhookSender.EmbedImage("https://images.pexels.com/photos/133689/pexels-photo-133689.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1")
+        val image3 = DiscordWebhookSender.EmbedImage("https://images.pexels.com/photos/2798477/pexels-photo-2798477.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1")
+        val image4 = DiscordWebhookSender.EmbedImage("https://images.pexels.com/photos/16821447/pexels-photo-16821447/free-photo-of-facade-of-the-fort-santiago-manila-philippines.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1")
+        val images = listOf(image1, image2, image3, image4)
+        val footer = DiscordWebhookSender.EmbedFooter("This is the footer text", "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Minecraft_missing_texture_block.svg/48px-Minecraft_missing_texture_block.svg.png?20230311130803")
         val timestamp = "now" // You can also use a Date object here to set a specific timestamp.
         val embed = DiscordWebhookSender.DiscordEmbed(
             author = author,
@@ -88,52 +92,51 @@ val author = DiscordWebhookSender.EmbedAuthor("John Doe", "https://example.com",
             color = 16711680, // Decimal color code for red: 255 Red, 0 Green, 0 Blue
             fields = fields,
             thumbnail = thumbnail,
-            image = image,
+            images = images,
             footer = footer,
             timestamp = timestamp
         )
 
-        val message = DiscordWebhookSender.DiscordWebhookMessage(embeds = listOf(embed))
+        val message = DiscordWebhookSender.DiscordWebhookMessage(embeds = listOf(embed), notify = false)
         sendWebhook(webhookUrl, message)
 ```
 Output:
 
-![image](https://media.discordapp.net/attachments/1006249405013307413/1135866691071516843/image.png?width=662&height=451)
+![image](https://media.discordapp.net/attachments/1006249405013307413/1136003905025749063/image.png?width=632&height=670)
 - For Java:
 ```java
 String webhookUrl = "https://discord.com/api/webhooks/your_webhook_id/your_webhook_token";
 DiscordWebhookSender.EmbedAuthor author = new DiscordWebhookSender.EmbedAuthor("John Doe", "https://example.com", "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Minecraft_missing_texture_block.svg/48px-Minecraft_missing_texture_block.svg.png?20230311130803");
 DiscordWebhookSender.EmbedField field1 = new DiscordWebhookSender.EmbedField("Field 1", "Value 1", true);
 DiscordWebhookSender.EmbedField field2 = new DiscordWebhookSender.EmbedField("Field 2", "Value 2", true);
-List<DiscordWebhookSender.EmbedField> fields = new ArrayList<>();
-fields.add(field1);
-fields.add(field2);
-DiscordWebhookSender.EmbedThumbnail thumbnail = new DiscordWebhookSender.EmbedThumbnail("https://example.com/thumbnail.png");
-DiscordWebhookSender.EmbedImage image = new DiscordWebhookSender.EmbedImage("https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Minecraft_missing_texture_block.svg/48px-Minecraft_missing_texture_block.svg.png?20230311130803");
-DiscordWebhookSender.EmbedFooter footer = new DiscordWebhookSender.EmbedFooter("This is the footer text", "https://example.com/footer_icon.png");
-Object timestamp = "now"; // You can also use a Date object here to set a specific timestamp.
-DiscordWebhookSender.DiscordEmbed embed = new DiscordWebhookSender.DiscordEmbed();
-embed.setAuthor(author);
-embed.setTitle("Hello, Java!");
-embed.setUrl("https://example.com");
-embed.setDescription("This is a rich embed message with fields.");
-embed.setColor(16711680); // Decimal color code for red: 255 Red, 0 Green, 0 Blue
-embed.setFields(fields);
-embed.setThumbnail(thumbnail);
-embed.setImage(image);
-embed.setFooter(footer);
-embed.setTimestamp(timestamp);
-
-DiscordWebhookSender.DiscordWebhookMessage message = new DiscordWebhookSender.DiscordWebhookMessage();
-List<DiscordWebhookSender.DiscordEmbed> embeds = new ArrayList<>();
-embeds.add(embed);
-message.setEmbeds(embeds);
+List<DiscordWebhookSender.EmbedField> fields = Arrays.asList(field1, field2);
+DiscordWebhookSender.EmbedThumbnail thumbnail = new DiscordWebhookSender.EmbedThumbnail("https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Minecraft_missing_texture_block.svg/48px-Minecraft_missing_texture_block.svg.png?20230311130803");
+DiscordWebhookSender.EmbedImage image1 = new DiscordWebhookSender.EmbedImage("https://images.pexels.com/photos/9322322/pexels-photo-9322322.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+DiscordWebhookSender.EmbedImage image2 = new DiscordWebhookSender.EmbedImage("https://images.pexels.com/photos/133689/pexels-photo-133689.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+DiscordWebhookSender.EmbedImage image3 = new DiscordWebhookSender.EmbedImage("https://images.pexels.com/photos/2798477/pexels-photo-2798477.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+DiscordWebhookSender.EmbedImage image4 = new DiscordWebhookSender.EmbedImage("https://images.pexels.com/photos/16821447/pexels-photo-16821447/free-photo-of-facade-of-the-fort-santiago-manila-philippines.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+List<DiscordWebhookSender.EmbedImage> images = Arrays.asList(image1, image2, image3, image4);
+DiscordWebhookSender.EmbedFooter footer = new DiscordWebhookSender.EmbedFooter("This is the footer text", "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/Minecraft_missing_texture_block.svg/48px-Minecraft_missing_texture_block.svg.png?20230311130803");
+String timestamp = "now"; // You can also use a Date object here to set a specific timestamp.
+DiscordWebhookSender.DiscordEmbed embed = new DiscordWebhookSender.DiscordEmbed(
+    author,
+    "Hello, Java!",
+    "https://example.com",
+    "This is a rich embed message with fields.",
+    16711680, // Decimal color code for red: 255 Red, 0 Green, 0 Blue
+    fields,
+    thumbnail,
+    images,
+    footer,
+    timestamp
+);
+DiscordWebhookSender.DiscordWebhookMessage message = new DiscordWebhookSender.DiscordWebhookMessage(Arrays.asList(embed), false);
 
 sendWebhook(webhookUrl, message);
 ```
 Output:
 
-![image](https://media.discordapp.net/attachments/1006249405013307413/1135869569077092412/image.png?width=556&height=455)
+![image](https://media.discordapp.net/attachments/1006249405013307413/1136003449331388466/image.png?width=631&height=670)
 ## Data Classes
 ### `sendWebhook` Function
 
@@ -152,7 +155,9 @@ Represents a Discord Webhook Message.
 | username      | `String?`         | Overrides the default username of the webhook.                                                                                                                      |
 | avatarUrl     | `String?`         | Overrides the default avatar of the webhook.                                                                                                                        |
 | content       | `String?`         | The simple text message to be sent. Limited to 2000 characters.                                                                                                     |
-| embeds        | `List<DiscordEmbed>?` | An array of [DiscordEmbed](#discordembed) objects, representing rich embeds to be included in the message.                                                           |
+| notify       | `Boolean?`         | Trigger push and desktop notifications.                                                                                                    |
+| thread       | `String?`         | Name of thread to create (requires the webhook channel to be a forum channel).                                                                                                     |
+| embeds        | `List<DiscordEmbed>?` | An array of [DiscordEmbed](#discordembed) objects, representing rich embeds to be included in the message. Max of 10 Embeds                                                          |
 
 
 ### `DiscordEmbed`
@@ -168,7 +173,7 @@ Represents a Discord Embed containing rich content.
 | color         | `Int?`                   | The color code of the embed. Use the Decimal numeral system, not Hexadecimal. You may use this [converter](https://www.binaryhexconverter.com/hex-to-decimal-converter) to find the equivalent of your hex code                                                                                                  |
 | fields        | `List<EmbedField>?`      | An array of [EmbedField](#embedfield) objects containing additional information in the form of fields.                                                                              |
 | thumbnail     | `EmbedThumbnail?`        | The [EmbedThumbnail](#embedthumbnail) of the embed, typically a small image associated with the content.                                                                           |
-| image         | `EmbedImage?`            | The [EmbedImage](#embedimage) of the embed, typically a larger image associated with the content.                                                                                  |
+| images         | `List<EmbedImage?>?`            | An array of [EmbedImage](#embedimage) objects of the embed, typically a larger image associated with the content. Up to 4 images . NOTE: if the Embed's URL is null or empty, you may not add more than one image.                                                                               |
 | footer        | `EmbedFooter?`           | The [EmbedFooter](#embedfooter) of the embed, typically used for credits or attributions.                                                                                          |
 | timestamp     | `Date?` or `String?`                | The timestamp to display in the embed.  If set to a string `"now"`, the current date will be used.                                                   |
 
