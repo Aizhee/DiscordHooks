@@ -7,7 +7,7 @@
 
 ![Logo](https://cdn.discordapp.com/attachments/986206581169463339/1135244456736604331/Untitledd-1.png)
 
-DiscordHooks is a user-friendly Android-Kotlin library designed for easy integration with Discord webhook URLs. It enables real-time messaging and notifications, allowing developers to engage with Discord channels effortlessly. Simplify your communication process and enhance user experiences with DiscordHooks. 
+DiscordHooks is a user-friendly Android library written in Kotlin designed for easy integration with Discord webhook URLs. It enables real-time messaging and notifications, allowing developers to engage with Discord channels effortlessly. Simplify your communication process and enhance user experiences with DiscordHooks. 
 
 This is my first library so any feedback is highly appreciated ╰(▔∀▔)╯ 
 
